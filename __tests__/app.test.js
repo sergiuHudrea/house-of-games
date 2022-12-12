@@ -12,12 +12,6 @@ afterAll( () => {
 
 beforeEach( () => seed(testData) );
 
-
-    
-
-
-
-
 describe("GET /api/categories", () => {
     test("Responds with an array of category objects, each of which should have the properies of 'slug' and 'description'.", () => {
         return request(app)
@@ -42,5 +36,34 @@ describe("GET /api/categories", () => {
         return request(app)
         .get("/api/sdasds")
         .expect(404)
+    })
+})
+
+
+describe.only("GET /api/reviews", () => {
+    test("it works!", () => {
+    return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(( {body} ) => {
+            const {reviews} = body;
+            expect(reviews).toBeInstanceOf(Array);
+            expect(reviews).toHaveLength(13);
+            reviews.forEach((review) => {
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        category: expect.any(String),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        designer: expect.any(String),
+                        comment_count: expect.any(String)
+                    })
+                )
+            })
+        })
     })
 })
