@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-app.use(express.json());
 
 const { getCategories } = require('./controllers/games');
 
@@ -26,7 +25,6 @@ app.use((err, req,  res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    console.log(err);
     res.status(500).send( { msg: "Internal Server Error."} );
 })
 
