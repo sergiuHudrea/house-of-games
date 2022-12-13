@@ -46,7 +46,6 @@ exports.postComments = (req, res, next) => {
     const {review_id} = req.params;
     insertComments(review_id, req.body)
         .then( (comment) => {
-            console.log("heeees")
             res.status(201).send( {comment} );
         })
         .catch((err) => {

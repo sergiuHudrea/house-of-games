@@ -199,7 +199,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
 describe("POST /api/reviews/:review_id/comments", () => {
     test("status:201, responds with a newly added comment to the database", () => {
         const newComment = {
-            username: "Kostas",
+            username: "mallionaire",
             body: "That looks pretty fun!"
         }
         return request(app)
@@ -207,9 +207,17 @@ describe("POST /api/reviews/:review_id/comments", () => {
             .send(newComment)
             .expect(201)
             .then(( {body} ) => {
+                expect(body.comment).toBeInstanceOf(Object)
                 expect(body.comment).toEqual({
-                    hey: "dfdsfs"
+                        author: "mallionaire",
+                        body: "That looks pretty fun!",
+                        comment_id: 7,
+                        created_at: expect.any(String),
+                        review_id: 3,
+                        votes: 0
                 })
             })
     })
 })
+
+// test for id non existent, or not number + other 3
