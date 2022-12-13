@@ -59,7 +59,7 @@ describe("GET /api/categories", () => {
 
 
 describe("GET /api/reviews", () => {
-    test("Responds with an array of review objects,sorted by date in descending order, each with these properties: owner, title, review_id, category, review_img_url,  created_at, votes, designer, comment_count.", () => {
+    test("Responds with an array of review objects, each with these properties: owner, title, review_id, category, review_img_url,  created_at, votes, designer, comment_count.", () => {
     return request(app)
         .get('/api/reviews')
         .expect(200)
@@ -83,6 +83,15 @@ describe("GET /api/reviews", () => {
                 )
             })
         })
+    })
+
+    test("Responds with a key of reviews sorted by date (created_at) in descending order.", () => {
+        return request(app)
+            .get('/api/reviews')
+            .expect(200)
+            .then((res) => {
+                expect(res.body.reviews).toBeSortedBy('created_at', {descending: true});
+            })
     })
 
     test("GET /api/not-route, returns 404", () => {
