@@ -5,7 +5,6 @@ const db = require("../db/connection");
 const testData = require('../db/data/test-data/index');
 const seed = require('../db/seeds/seed');
 
-
 afterAll( () => {
     if (db.end) db.end();
 });
@@ -21,6 +20,14 @@ describe("GET /api", () => {
             .then(( {body} ) => {
                 expect(body.msg).toBe("So far so good")
             })
+    })
+})
+
+describe("Responds with 404 when given a bad route /not-a-route", () => {
+    test("GET /not-a-route, returns 404", () => {
+        return request(app)
+        .get("/APIOOOOO")
+        .expect(404)
     })
 })
 
@@ -87,16 +94,53 @@ describe("GET /api/reviews", () => {
     
 })
 
-describe("Responds with 404 when given a bad route", () => {
-    test("GET /not-a-route, returns 404", () => {
-        return request(app)
-        .get("/APIOOOOO")
-        .expect(404)
-    })
-    
+describe("Responds with 404 when given a bad route /api/not-a-route", () => {
     test("GET /api/not-route, returns 404", () => {
         return request(app)
         .get("/api/revieeewwssssss")
         .expect(404)
+    })
+})
+
+describe("GET /api/reviews/:review_id", () => {
+    test("Responds with a review object, containing all its properties", () => {
+        return request(app)
+            .get('/api/reviews/2')
+            .expect(200)
+            .then(( {body} ) => {
+                const {review} = body;
+                expect(review).toBeInstanceOf(Object);
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        owner: expect.any(String),
+                        title: expect.any(String),
+                        review_id: expect.any(Number),
+                        category: expect.any(String),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        designer: expect.any(String),
+                        review_body: expect.any(String)
+                        })
+                    )
+                
+            })
+        })
+    test("Responds with 400 Bad Request when given an invalid ID", () => {
+        return request(app)
+            .get('/api/reviews/not')
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+    })
+
+    test("Responds with 404 Not Found when id does not exist.", () => {
+        return request(app)
+            .get('/api/reviews/45634')
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
     })
 })
