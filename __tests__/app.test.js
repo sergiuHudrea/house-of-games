@@ -22,11 +22,6 @@ describe("GET /api", () => {
                 expect(body.msg).toBe("So far so good")
             })
     })
-    test("GET /not-a-route, returns 404", () => {
-        return request(app)
-        .get("/APIOOOOO")
-        .expect(404)
-    })
 })
 
 
@@ -48,12 +43,6 @@ describe("GET /api/categories", () => {
                     )
                 })
             })
-    })
-
-    test("GET /api/not-route, returns 404", () => {
-        return request(app)
-        .get("/api/sdasds")
-        .expect(404)
     })
 })
 
@@ -89,11 +78,22 @@ describe("GET /api/reviews", () => {
         return request(app)
             .get('/api/reviews')
             .expect(200)
-            .then((res) => {
-                expect(res.body.reviews).toBeSortedBy('created_at', {descending: true});
+            .then(( {body} ) => {
+                const {reviews} = body
+                expect(reviews).toBeSortedBy('created_at', {descending: true});
             })
     })
 
+    
+})
+
+describe("Responds with 404 when given a bad route", () => {
+    test("GET /not-a-route, returns 404", () => {
+        return request(app)
+        .get("/APIOOOOO")
+        .expect(404)
+    })
+    
     test("GET /api/not-route, returns 404", () => {
         return request(app)
         .get("/api/revieeewwssssss")
