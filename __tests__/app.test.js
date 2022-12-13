@@ -144,7 +144,7 @@ describe("GET /api/reviews/:review_id", () => {
     })
 })
 
-describe.only("6. GET /api/reviews/:review_id/comments", () => {
+describe("6. GET /api/reviews/:review_id/comments", () => {
     test("Responds with an array of comments for the given review_id, each with all comment's properties sorted by date (created_at) with the most recent first.", () => {
         return request(app)
             .get('/api/reviews/2/comments')
@@ -162,7 +162,7 @@ describe.only("6. GET /api/reviews/:review_id/comments", () => {
                             created_at: expect.any(String),
                             author: expect.any(String),
                             body: expect.any(String),
-                            review_id: expect.any(Number)
+                            review_id: 2
                         })
                     )
                 })
