@@ -143,3 +143,55 @@ describe("GET /api/reviews/:review_id", () => {
             })
     })
 })
+
+describe("6. GET /api/reviews/:review_id/comments", () => {
+    test("Responds with an array of comments for the given review_id, each with all comment's properties", () => {
+        return request(app)
+            .get('/api/reviews/2/comments')
+            .then(( {body} ) => {
+                const {comments} = body;
+                expect(comments).toBeInstanceOf(Array);
+                expect(comments).toHaveLength(3);
+                comments.forEach((comment) => {
+                    expect(comment).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String),
+                            review_id: expect.any(Number)
+                        })
+                    )
+                })
+            })
+    })
+    test("Responds with a key of comments sorted by date (created_at) with the most recent first.", () => {
+        return request(app)
+            .get('/api/reviews/2/comments')
+            .expect(200)
+            .then(( {body} ) => {
+                const {comments} = body
+                expect(comments).toBeSortedBy('created_at', {descending: true});
+            })
+    })
+    test("Responds with 400 Bad Request when given an invalid ID", () => {
+        return request(app)
+            .get('/api/reviews/HELOOO/comments')
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+    })
+
+    test("Responds with 404 Not Found when id does not exist.", () => {
+        return request(app)
+            .get('/api/reviews/2452345/comments')
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
+    })
+
+
+})
