@@ -44,3 +44,16 @@ exports.selectCommentsById = (review_id) => {
             return res.rows;
         })
 }
+
+exports.insertComments = (review_id, newComment) => {
+    const {username, body} = newComment;
+    console.log(review_id)
+    console.log(username, "<< USER")
+    console.log(body, "<<body")
+    return db
+        .query("INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING * ;", [username, body, review_id])
+        .then((res) => {
+            console.log(res.rows[0])
+            return res.rows[0]
+        })
+}

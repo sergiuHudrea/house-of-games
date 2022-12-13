@@ -144,7 +144,7 @@ describe("GET /api/reviews/:review_id", () => {
     })
 })
 
-describe("6. GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
     test("Responds with an array of comments for the given review_id, each with all comment's properties sorted by date (created_at) with the most recent first.", () => {
         return request(app)
             .get('/api/reviews/2/comments')
@@ -194,6 +194,22 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
                 expect(comments).toHaveLength(0)
             })
     })
+})
 
-
+describe("POST /api/reviews/:review_id/comments", () => {
+    test("status:201, responds with a newly added comment to the database", () => {
+        const newComment = {
+            username: "Kostas",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(201)
+            .then(( {body} ) => {
+                expect(body.comment).toEqual({
+                    hey: "dfdsfs"
+                })
+            })
+    })
 })
