@@ -144,14 +144,16 @@ describe("GET /api/reviews/:review_id", () => {
     })
 })
 
-describe("6. GET /api/reviews/:review_id/comments", () => {
-    test("Responds with an array of comments for the given review_id, each with all comment's properties", () => {
+describe.only("6. GET /api/reviews/:review_id/comments", () => {
+    test("Responds with an array of comments for the given review_id, each with all comment's properties sorted by date (created_at) with the most recent first.", () => {
         return request(app)
             .get('/api/reviews/2/comments')
+            .expect(200)
             .then(( {body} ) => {
                 const {comments} = body;
                 expect(comments).toBeInstanceOf(Array);
                 expect(comments).toHaveLength(3);
+                expect(comments).toBeSortedBy('created_at', {descending: true});
                 comments.forEach((comment) => {
                     expect(comment).toEqual(
                         expect.objectContaining({
@@ -164,15 +166,6 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
                         })
                     )
                 })
-            })
-    })
-    test("Responds with a key of comments sorted by date (created_at) with the most recent first.", () => {
-        return request(app)
-            .get('/api/reviews/2/comments')
-            .expect(200)
-            .then(( {body} ) => {
-                const {comments} = body
-                expect(comments).toBeSortedBy('created_at', {descending: true});
             })
     })
     test("Responds with 400 Bad Request when given an invalid ID", () => {
@@ -190,6 +183,15 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
             .expect(404)
             .then(( {body} ) => {
                 expect(body.msg).toBe("Not Found.")
+            })
+    })
+    test("Responds with 200 and empty Array when id exists, but there are no comments connected to it.", () => {
+        return request(app)
+            .get('/api/reviews/1/comments')
+            .expect(200)
+            .then(( {body} ) => {
+                const {comments} = body
+                expect(comments).toHaveLength(0)
             })
     })
 

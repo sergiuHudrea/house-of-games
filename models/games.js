@@ -41,9 +41,6 @@ exports.selectCommentsById = (review_id) => {
                 WHERE review_id = $1
                 ORDER BY created_at DESC;`, [review_id])
         .then( (res) => {
-            if (res.rowCount === 0) {
-                return Promise.reject( {status: 404, msg: "Not Found."})
-            }
             return res.rows;
         })
 }
