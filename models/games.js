@@ -19,7 +19,6 @@ exports.selectReviews = () => {
         ORDER BY created_at DESC
         ;`)
         .then( (res) => {
-            console.log(res.rows)
             return res.rows;
         })
 }

@@ -3,7 +3,9 @@ const app = express();
 
 const { getCategories, getReviews } = require('./controllers/games');
 
-
+app.get('/api', (req, res) => {
+    res.status(200).send( {msg: "So far so good"} )
+})
 
 app.get('/api/categories', getCategories);
 

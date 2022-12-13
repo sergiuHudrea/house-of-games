@@ -12,6 +12,24 @@ afterAll( () => {
 
 beforeEach( () => seed(testData) );
 
+
+describe("GET /api", () => {
+    test("Responds with code 200 and the message 'So far so good'", () => {
+        return request(app)
+            .get("/api")
+            .expect(200)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("So far so good")
+            })
+    })
+    test("GET /not-a-route, returns 404", () => {
+        return request(app)
+        .get("/APIOOOOO")
+        .expect(404)
+    })
+})
+
+
 describe("GET /api/categories", () => {
     test("Responds with an array of category objects, each of which should have the properies of 'slug' and 'description'.", () => {
         return request(app)
@@ -40,8 +58,8 @@ describe("GET /api/categories", () => {
 })
 
 
-describe.only("GET /api/reviews", () => {
-    test("it works!", () => {
+describe("GET /api/reviews", () => {
+    test("Responds with an array of review objects,sorted by date in descending order, each with these properties: owner, title, review_id, category, review_img_url,  created_at, votes, designer, comment_count.", () => {
     return request(app)
         .get('/api/reviews')
         .expect(200)
@@ -65,5 +83,11 @@ describe.only("GET /api/reviews", () => {
                 )
             })
         })
+    })
+
+    test("GET /api/not-route, returns 404", () => {
+        return request(app)
+        .get("/api/revieeewwssssss")
+        .expect(404)
     })
 })
