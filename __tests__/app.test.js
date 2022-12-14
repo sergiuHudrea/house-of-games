@@ -207,7 +207,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
             .send(newComment)
             .expect(201)
             .then(( {body} ) => {
-                expect(body.comment).toBeInstanceOf(Object)
                 expect(body.comment).toEqual({
                         author: "mallionaire",
                         body: "That looks pretty fun!",
@@ -230,7 +229,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
             .send(newComment)
             .expect(201)
             .then(( {body} ) => {
-                expect(body.comment).toBeInstanceOf(Object)
                 expect(body.comment).toEqual({
                         author: "mallionaire",
                         body: "That looks pretty fun!",
