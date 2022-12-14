@@ -53,3 +53,15 @@ exports.insertComments = (review_id, newComment) => {
             return res.rows[0];
         })
 }
+
+exports.updateReviewsById = (review_id, updates) => {
+    const {inc_votes} = updates;
+    return db
+        .query(`UPDATE reviews 
+                SET votes = votes + $1
+                WHERE review_id = $2
+                RETURNING *`, [inc_votes, review_id])
+        .then( (res) => {
+            return res.rows[0];
+        })
+}
