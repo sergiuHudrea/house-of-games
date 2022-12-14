@@ -44,12 +44,14 @@ exports.getCommentsById = (req ,res, next) => {
 
 exports.postComments = (req, res, next) => {
     const {review_id} = req.params;
-    insertComments(review_id, req.body)
+    const promises = [selectReviewsById(review_id), insertComments(review_id, req.body)];
+    
+    Promise.all(promises)
         .then( (comment) => {
+            comment = comment[1]
             res.status(201).send( {comment} );
         })
         .catch((err) => {
             next(err);
         })
-
 }

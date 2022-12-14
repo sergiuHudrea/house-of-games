@@ -196,7 +196,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
     })
 })
 
-describe("POST /api/reviews/:review_id/comments", () => {
+describe.only("POST /api/reviews/:review_id/comments", () => {
     test("status:201, responds with a newly added comment to the database", () => {
         const newComment = {
             username: "mallionaire",
@@ -218,6 +218,69 @@ describe("POST /api/reviews/:review_id/comments", () => {
                 })
             })
     })
+    test('Responds with 400 Bad Request when body fails schema validation (it is null when it shouldn\'t).', () => {
+        const newComment = {
+            username: "mallionaire",
+            body: null
+        };
+        return request(app)
+            .post('/api/reviews/2/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe('Bad Request.')
+            })
+    })
+    test('Responds with 400 Bad Request there are missing keys', () => {
+        const newComment = {
+            username: "mallionaire",
+        };
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe('Bad Request.')
+            })
+    })
+    test('Responds with 400 Bad Request when sent an empty object', () => {
+        const newComment = {};
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe('Bad Request.')
+            })
+    })
+    test("Responds with 400 Bad Request when given an invalid ID", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/NOT_WHAT_IT_SHOULD_BE/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+})
+    test("Responds with 404 Not Found when id does not exist.", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/2452345/comments')
+            .send(newComment)
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
+
+})
+
 })
 
 // test for id non existent, or not number + other 3
