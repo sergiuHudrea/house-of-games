@@ -327,7 +327,6 @@ describe("PATCH /api/reviews/:review_id", () => {
             .expect(200)
             .then(( {body} ) => {
                 const {review} = body;
-                expect(review).toBeInstanceOf(Object);
                 expect(review).toEqual({
                     review_id: 2,
                     title: 'Jenga',
@@ -353,7 +352,6 @@ describe("PATCH /api/reviews/:review_id", () => {
             .expect(200)
             .then(( {body} ) => {
                 const {review} = body;
-                expect(review).toBeInstanceOf(Object);
                 expect(review).toEqual({
                     review_id: 2,
                     title: 'Jenga',
@@ -380,7 +378,6 @@ describe("PATCH /api/reviews/:review_id", () => {
             .expect(200)
             .then(( {body} ) => {
                 const {review} = body;
-                expect(review).toBeInstanceOf(Object);
                 expect(review).toEqual({
                     review_id: 2,
                     title: 'Jenga',

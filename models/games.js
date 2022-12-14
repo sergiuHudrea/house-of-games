@@ -62,6 +62,9 @@ exports.updateReviewsById = (review_id, updates) => {
                 WHERE review_id = $2
                 RETURNING *`, [inc_votes, review_id])
         .then( (res) => {
+            if (res.rowCount === 0) {
+                return Promise.reject( {status: 404, msg: "Not Found."})
+            }
             return res.rows[0];
         })
 }

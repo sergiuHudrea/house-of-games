@@ -58,11 +58,9 @@ exports.postComments = (req, res, next) => {
 
 exports.patchReviewsById = (req, res, next) => {
     const {review_id} = req.params;
-    const promises = [selectReviewsById(review_id), updateReviewsById(review_id, req.body)];
 
-    Promise.all(promises)
+    updateReviewsById(review_id, req.body)
         .then( (review) => {
-            review = review[1];
             res.status(200).send( {review} );
         })
         .catch( (err) => {
