@@ -144,7 +144,7 @@ describe("GET /api/reviews/:review_id", () => {
     })
 })
 
-describe("6. GET /api/reviews/:review_id/comments", () => {
+describe("GET /api/reviews/:review_id/comments", () => {
     test("Responds with an array of comments for the given review_id, each with all comment's properties sorted by date (created_at) with the most recent first.", () => {
         return request(app)
             .get('/api/reviews/2/comments')
@@ -194,6 +194,124 @@ describe("6. GET /api/reviews/:review_id/comments", () => {
                 expect(comments).toHaveLength(0)
             })
     })
+})
 
+describe("POST /api/reviews/:review_id/comments", () => {
+    test("status:201, responds with a newly added comment to the database", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(201)
+            .then(( {body} ) => {
+                expect(body.comment).toEqual({
+                        author: "mallionaire",
+                        body: "That looks pretty fun!",
+                        comment_id: 7,
+                        created_at: expect.any(String),
+                        review_id: 3,
+                        votes: 0
+                })
+            })
+    })
+    test("Responds with status:201 even if we give extra properties to the comment.", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!",
+            age: 55
 
+        }
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(201)
+            .then(( {body} ) => {
+                expect(body.comment).toEqual({
+                        author: "mallionaire",
+                        body: "That looks pretty fun!",
+                        comment_id: 7,
+                        created_at: expect.any(String),
+                        review_id: 3,
+                        votes: 0
+                })
+            })
+    })
+    test('Responds with 400 Bad Request when body fails schema validation (it is null when it shouldn\'t).', () => {
+        const newComment = {
+            username: "mallionaire",
+            body: null
+        };
+        return request(app)
+            .post('/api/reviews/2/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe('Bad Request.')
+            })
+    })
+    test('Responds with 400 Bad Request there are missing keys', () => {
+        const newComment = {
+            username: "mallionaire",
+        };
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe('Bad Request.')
+            })
+    })
+    test('Responds with 400 Bad Request when sent an empty object', () => {
+        const newComment = {};
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe('Bad Request.')
+            })
+    })
+    test("Responds with 400 Bad Request when given an invalid ID", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/NOT_WHAT_IT_SHOULD_BE/comments')
+            .send(newComment)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+})
+    test("Responds with 404 Not Found when id does not exist.", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/2452345/comments')
+            .send(newComment)
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
+
+})
+    test("Responds with 404 Not Found when given an username which doesn't exist", () => {
+        const newComment = {
+            username: "BATMAN",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/2/comments')
+            .send(newComment)
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
+    })
 })
