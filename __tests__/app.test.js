@@ -431,7 +431,9 @@ describe("PATCH /api/reviews/:review_id", () => {
             })
     })
     test('Responds with 400 Bad Request when body fails schema validation (input string when required INT).', () => {
-        const vote_updates = {};
+        const vote_updates = {
+            inc_votes: "NOT_A_VOTE"
+        };
         return request(app)
             .patch('/api/reviews/2')
             .send(vote_updates)
