@@ -196,11 +196,34 @@ describe("GET /api/reviews/:review_id/comments", () => {
     })
 })
 
-describe.only("POST /api/reviews/:review_id/comments", () => {
+describe("POST /api/reviews/:review_id/comments", () => {
     test("status:201, responds with a newly added comment to the database", () => {
         const newComment = {
             username: "mallionaire",
             body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/3/comments')
+            .send(newComment)
+            .expect(201)
+            .then(( {body} ) => {
+                expect(body.comment).toBeInstanceOf(Object)
+                expect(body.comment).toEqual({
+                        author: "mallionaire",
+                        body: "That looks pretty fun!",
+                        comment_id: 7,
+                        created_at: expect.any(String),
+                        review_id: 3,
+                        votes: 0
+                })
+            })
+    })
+    test("Responds with status:201 even if we give extra properties to the comment.", () => {
+        const newComment = {
+            username: "mallionaire",
+            body: "That looks pretty fun!",
+            age: 55
+
         }
         return request(app)
             .post('/api/reviews/3/comments')
@@ -280,5 +303,17 @@ describe.only("POST /api/reviews/:review_id/comments", () => {
             })
 
 })
-
+    test("Responds with 404 Not Found when given an username which doesn't exist", () => {
+        const newComment = {
+            username: "BATMAN",
+            body: "That looks pretty fun!"
+        }
+        return request(app)
+            .post('/api/reviews/2/comments')
+            .send(newComment)
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
+    })
 })
