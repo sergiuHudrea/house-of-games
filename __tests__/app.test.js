@@ -282,5 +282,3 @@ describe.only("POST /api/reviews/:review_id/comments", () => {
 })
 
 })
-
-// test for id non existent, or not number + other 3
