@@ -103,7 +103,7 @@ describe("Responds with 404 when given a bad route /api/not-a-route", () => {
 })
 
 describe("GET /api/reviews/:review_id", () => {
-    test("Responds with a review object, containing all its properties", () => {
+    test("Responds with a review object, containing all its properties + comment_count", () => {
         return request(app)
             .get('/api/reviews/2')
             .expect(200)
@@ -119,7 +119,8 @@ describe("GET /api/reviews/:review_id", () => {
                     review_body: 'Fiddly fun for all the family',
                     review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
                     created_at: '2021-01-18T10:01:41.251Z',
-                    votes: 5
+                    votes: 5,
+                    comment_count: expect.any(String)
                   }
                     )
                 
@@ -587,12 +588,12 @@ test("Responds with an array of review objects, selects all the reviews when the
         })
     })
 })
-    test("Responds with 400 'Invalid order query' when category does not exist.", () => {
+    test("Responds with 400 'Not Found.' when category does not exist.", () => {
         return request(app)
             .get('/api/reviews?category=friendssdfsd')
-            .expect(400)
+            .expect(404)
             .then(( {body} ) => {
-                    expect(body.msg).toBe('Invalid order query');
+                    expect(body.msg).toBe('Not Found.');
             })
         })
     test("Responds with 200 and an empty array when category exists but does not have any reviews associated with it", () => {
