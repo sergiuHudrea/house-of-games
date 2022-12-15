@@ -443,6 +443,26 @@ describe("PATCH /api/reviews/:review_id", () => {
                 expect(body.msg).toBe("Bad Request.")
             })
     })
+})
 
-    
+describe('GET /api/users', () => {
+    test("Responds with an an array of objects, each object should have the following property: username, name, avatar_url.", () => {
+        return request(app)
+            .get("/api/users")
+            .expect(200)
+            .then(( {body} ) => {
+                const {users} = body;
+                expect(users).toBeInstanceOf(Array);
+                expect(users).toHaveLength(4);
+                users.forEach((user) => {
+                    expect(user).toEqual(
+                        expect.objectContaining({
+                            username: expect.any(String),
+                            name: expect.any(String),
+                            avatar_url: expect.any(String)
+                        })
+                    )
+                })
+            })
+    })
 })

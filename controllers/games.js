@@ -1,4 +1,4 @@
-const { selectCategories, selectReviews, selectReviewsById, selectCommentsById, insertComments, updateReviewsById } = require('../models/games');
+const { selectCategories, selectReviews, selectReviewsById, selectCommentsById, insertComments, updateReviewsById, selectUsers } = require('../models/games');
 
 
 exports.getCategories = (req, res, next) => {
@@ -44,12 +44,10 @@ exports.getCommentsById = (req ,res, next) => {
 
 exports.postComments = (req, res, next) => {
     const {review_id} = req.params;
-    const promises = [selectReviewsById(review_id), insertComments(review_id, req.body)];
-    
-    Promise.all(promises)
+  
+    insertComments(review_id, req.body)
         .then( (comment) => {
-            comment = comment[1]
-            res.status(201).send( {comment} );
+            res.status(201).send({comment})
         })
         .catch((err) => {
             next(err);
@@ -66,4 +64,13 @@ exports.patchReviewsById = (req, res, next) => {
         .catch( (err) => {
             next(err);
         })
+}
+
+exports.getUsers = (req, res, next) => {
+    selectUsers().then( (users) => {
+        res.status(200).send( {users} );
+    })
+    .catch( (err) => {
+        next(err);
+    });
 }
