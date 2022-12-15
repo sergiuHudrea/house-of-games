@@ -604,5 +604,29 @@ test("Responds with an array of review objects, selects all the reviews when the
                     expect(body.reviews).toEqual([]);
             })
         })
+})
 
+describe(' DELETE /api/comments/:comment_id', () => {
+    test('status:204, responds with nothing', () => {
+      return request(app)
+      .delete('/api/comments/2')
+      .expect(204);
+    });
+  
+    test("Return 404 Not Found when comment_id does not exist", () => {
+      return request(app)
+      .delete('/api/comments/45343')
+      .expect(404)
+      .then(( {body} ) => {
+        expect(body.msg).toBe('Not found.');
+      })
+    })
+    test("Return 400 Bad Request when comment_id is invalid.", () => {
+        return request(app)
+        .delete('/api/comments/BONSOIR')
+        .expect(400)
+        .then(( {body} ) => {
+          expect(body.msg).toBe('Bad Request.');
+        })
+      })
 })
