@@ -1,4 +1,4 @@
-const { selectCategories, selectReviews, selectReviewsById, selectCommentsById, insertComments, updateReviewsById, selectUsers } = require('../models/games');
+const { selectCategories, selectReviews, selectReviewsById, selectCommentsById, insertComments, updateReviewsById, selectUsers, removeByCommentId } = require('../models/games');
 
 
 exports.getCategories = (req, res, next) => {
@@ -74,4 +74,14 @@ exports.getUsers = (req, res, next) => {
     .catch( (err) => {
         next(err);
     });
+}
+
+exports.deleteByCommentId = (req, res, next) => {
+    const {comment_id} = req.params;
+    removeByCommentId(comment_id).then( (comment) => {
+        res.send(204);
+    })
+    .catch( (err) => {
+        next(err);
+    })
 }
