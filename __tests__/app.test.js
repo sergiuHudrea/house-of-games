@@ -315,3 +315,134 @@ describe("POST /api/reviews/:review_id/comments", () => {
             })
     })
 })
+
+describe("PATCH /api/reviews/:review_id", () => {
+    test('Responds with 200 and an updated review when decreasing votes.', () => {
+        const vote_updates = {
+            inc_votes: -10
+        };
+        return request(app)
+            .patch('/api/reviews/2')
+            .send(vote_updates)
+            .expect(200)
+            .then(( {body} ) => {
+                const {review} = body;
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        review_id: expect.any(Number),
+                        title: expect.any(String),
+                        category: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        review_body: expect.any(String),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: -5
+                        })
+                    )
+                
+            })
+    })
+    test('Responds with 200 and an updated review when increasing votes.', () => {
+        const vote_updates = {
+            inc_votes: 5
+        };
+        return request(app)
+            .patch('/api/reviews/2')
+            .send(vote_updates)
+            .expect(200)
+            .then(( {body} ) => {
+                const {review} = body;
+                expect(review).toEqual(
+                    expect.objectContaining({
+                    review_id: expect.any(Number),
+                    title: expect.any(String),
+                    category: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_body: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: 10
+                    })
+                  
+                    )
+                
+            })
+    })
+    test('Responds with 200 and updated votes even when given extra keys in the object.', () => {
+        const vote_updates = {
+            inc_votes: 5,
+            age: 87
+        };
+        return request(app)
+            .patch('/api/reviews/2')
+            .send(vote_updates)
+            .expect(200)
+            .then(( {body} ) => {
+                const {review} = body;
+                expect(review).toEqual(
+                    expect.objectContaining({
+                        review_id: expect.any(Number),
+                        title: expect.any(String),
+                        category: expect.any(String),
+                        designer: expect.any(String),
+                        owner: expect.any(String),
+                        review_body: expect.any(String),
+                        review_img_url: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: 10
+                        })
+                    )
+                
+            })
+    })
+    test("Responds with 400 Bad Request when given an invalid ID", () => {
+        const vote_updates = {
+            inc_votes: 5
+        };
+        return request(app)
+            .patch('/api/reviews/HELLOO')
+            .send(vote_updates)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+    })
+    test("Responds with 404 Not Found when id does not exist.", () => {
+        const vote_updates = {
+            inc_votes: 5
+        };
+        return request(app)
+            .patch('/api/reviews/45234')
+            .send(vote_updates)
+            .expect(404)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Not Found.")
+            })
+    })
+    test('Responds with 400 Bad Request when sent an empty object', () => {
+        const vote_updates = {};
+        return request(app)
+            .patch('/api/reviews/2')
+            .send(vote_updates)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+    })
+    test('Responds with 400 Bad Request when body fails schema validation (input string when required INT).', () => {
+        const vote_updates = {
+            inc_votes: "NOT_A_VOTE"
+        };
+        return request(app)
+            .patch('/api/reviews/2')
+            .send(vote_updates)
+            .expect(400)
+            .then(( {body} ) => {
+                expect(body.msg).toBe("Bad Request.")
+            })
+    })
+
+    
+})
