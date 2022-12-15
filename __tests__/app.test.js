@@ -120,7 +120,7 @@ describe("GET /api/reviews/:review_id", () => {
                     review_img_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
                     created_at: '2021-01-18T10:01:41.251Z',
                     votes: 5,
-                    comment_count: expect.any(String)
+                    comment_count: "3"
                   }
                     )
                 
