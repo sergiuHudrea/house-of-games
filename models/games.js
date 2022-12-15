@@ -26,7 +26,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
         queryValue.push(category);
         queryStr += ` WHERE category = $1`    
     } else if (category !== undefined && !validCategory.includes(category)) {
-        return Promise.reject({status: 400, msg:'Invalid order query'})
+        return Promise.reject({status: 404, msg:'Not Found.'})
     }
     
     queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`
@@ -39,8 +39,12 @@ exports.selectReviews = (category, sort_by = "created_at", order = "desc") => {
 
 exports.selectReviewsById = (review_id) => {
     return db
-        .query(`SELECT * FROM reviews
-                WHERE review_id = $1;`, [review_id])
+        .query(`SELECT owner, title, reviews.review_id, reviews.review_body, category, review_img_url, reviews.created_at, reviews.votes, designer, COUNT(comment_id) AS comment_count
+                FROM comments
+                RIGHT OUTER JOIN reviews
+                ON reviews.review_id = comments.review_id
+                WHERE reviews.review_id = $1
+                GROUP BY reviews.review_id;`, [review_id])
         .then( (res) => {
             if (res.rowCount === 0) {
                 return Promise.reject( {status: 404, msg: "Not Found."})
