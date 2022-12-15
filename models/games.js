@@ -8,16 +8,30 @@ exports.selectCategories = () => {
         })
 }
 
-exports.selectReviews = () => { 
+exports.selectReviews = (category, sort_by = "created_at", order = "desc") => { 
+    const validCategory = ["euro game", "dexterity", "social deduction", "children's games"]
+    const validSortBy = ['created_at', 'category','title', 'designer', 'owner', 'review_img_url', 'review_body', 'votes', 'review_id'];
+
+    if(!validSortBy.includes(sort_by) || !['asc', 'desc'].includes(order)){
+        return Promise.reject({status: 400, msg:'Invalid order query'})
+    }
+
+    let queryStr = `
+    SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, COUNT(comment_id) AS comment_count
+    FROM comments
+    RIGHT OUTER JOIN reviews
+    ON reviews.review_id = comments.review_id`
+    let queryValue = [];
+    if (category !== undefined && validCategory.includes(category)) {
+        queryValue.push(category);
+        queryStr += ` WHERE category = $1`    
+    } else if (category !== undefined && !validCategory.includes(category)) {
+        return Promise.reject({status: 400, msg:'Invalid order query'})
+    }
+    
+    queryStr += ` GROUP BY reviews.review_id ORDER BY ${sort_by} ${order};`
     return db
-        .query(`
-        SELECT owner, title, reviews.review_id, category, review_img_url, reviews.created_at, reviews.votes, designer, COUNT(comment_id) AS comment_count
-        FROM comments
-        RIGHT OUTER JOIN reviews
-        ON reviews.review_id = comments.review_id
-        GROUP BY reviews.review_id
-        ORDER BY created_at DESC
-        ;`)
+        .query(queryStr, queryValue)
         .then( (res) => {
             return res.rows;
         })
