@@ -3,6 +3,13 @@ const app = express();
 
 app.use(express.json())
 
+
+app.get('/', (req, res) => {
+  res.send('Hello my friends.')
+})
+
+
+
 const { getCategories, getReviews, getReviewsById, getCommentsById, postComments, patchReviewsById, getUsers, deleteByCommentId} = require('./controllers/games');
 
 
