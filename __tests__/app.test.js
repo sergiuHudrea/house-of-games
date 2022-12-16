@@ -13,12 +13,12 @@ beforeEach( () => seed(testData) );
 
 
 describe("GET /api", () => {
-    test("Responds with code 200 and the message 'So far so good'", () => {
+    test("Responds with code 200 and the JSON object containing descriptions for all api endpoints", () => {
         return request(app)
             .get("/api")
             .expect(200)
             .then(( {body} ) => {
-                expect(body.msg).toBe("So far so good")
+                expect(body).toBeInstanceOf(Object)
             })
     })
 })
