@@ -1,6 +1,18 @@
 const { selectCategories, selectReviews, selectReviewsById, selectCommentsById, insertComments, updateReviewsById, selectUsers, removeByCommentId } = require('../models/games');
 
 
+const fs = require("fs/promises");
+
+exports.getEndpoints = (req, res, next) => {
+    res.setHeader("Content-Type", "application/json")
+    res.statusCode = 200
+    fs.readFile(`${__dirname}/../endpoints.json`, "utf-8")
+    .then((endpoints) => {
+        res.send(endpoints);
+
+    })
+}
+
 exports.getCategories = (req, res, next) => {
     selectCategories().then( (categories) => {
         res.status(200).send( {categories} );
