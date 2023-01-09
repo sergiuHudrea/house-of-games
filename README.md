@@ -44,7 +44,7 @@ Finally, the project to run you will need the minimum versions of `Node.js` v19.
 
 ## Link for the hosted version
 
-### [House of Games](https://house-of-games.onrender.com/api)
+### [House of Games](https://house-of-games.onrender.com)
 
 
 ## Summary
