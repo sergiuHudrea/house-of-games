@@ -10,7 +10,7 @@ exports.selectCategories = () => {
 
 exports.selectReviews = (category, sort_by = "created_at", order = "desc") => { 
     const validCategory = ["euro game", "dexterity", "social deduction", "children's games", "strategy", "hidden-roles", "push-your-luck", "roll-and-write", "deck-building", "engine-building" ]
-    const validSortBy = ['created_at', 'category','title', 'designer', 'owner', 'review_img_url', 'review_body', 'votes', 'review_id'];
+    const validSortBy = ['created_at', 'category','title', 'designer', 'owner', 'review_img_url', 'review_body', 'votes', 'review_id', 'comment_count'];
 
     if(!validSortBy.includes(sort_by) || !['asc', 'desc'].includes(order)){
         return Promise.reject({status: 400, msg:'Invalid order query'})
